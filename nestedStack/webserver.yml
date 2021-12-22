@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Run an ec2 instace
+
+Parameters:
+  VpcId:
+    Description: VpcId 
+    Type: AWS::EC2::VPC::Id
+    ConstraintDescription: Select an existing vpc
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Key name for SSH connection.
+    ConstraintDescription: Must be an existing key name.
+ 
+Resources:
+  WebserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: WebServerSecurityGroup
+      GroupDescription: WebServerSecurityGroup
+      SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 80
+            ToPort: 80
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 22
+            ToPort: 22
+            CidrIp: 0.0.0.0/0
+      VpcId:
+        Ref: VpcId
+      Tags:
+        - Key: Name
+          Value: InstanceSG
+
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: 
+        Ref: KeyName
+      ImageId: ami-002068ed284fb165b
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - Ref: WebserverSG
+      Tags:
+        - Key: Name
+          Value: Instance

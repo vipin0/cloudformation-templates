@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Main Stack to deploy wordpress using RDS,EC2, ASG, ALB.
+
+Parameters:
+  VpcId:
+    Description: VpcId 
+    Type: AWS::EC2::VPC::Id
+    ConstraintDescription: Select an existing vpc
+    
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Key name for SSH connection.
+    ConstraintDescription: Must be an existing key name.
+ 
+Resources:
+  Webserver:
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      Parameters: 
+        VpcId : 
+          Ref: VpcId
+        KeyName:
+          Ref: KeyName
+
+      TemplateURL: https://vipin-cf-templates.s3.us-east-2.amazonaws.com/webserver.yml
+
